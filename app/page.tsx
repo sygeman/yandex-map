@@ -1,48 +1,43 @@
 "use client";
-
-import { MapProvider, Map, useMap } from "../libs/map";
-
-const NavigateButton = () => {
-  const {
-    maps: { map },
-  } = useMap();
-
-  const onClick = () => {
-    map.setCenter([55.76, 37.64]);
-  };
-
-  return (
-    <button
-      className="py-1 px-2 bg-white text-slate-800 rounded text-lg"
-      onClick={onClick}
-    >
-      Reset
-    </button>
-  );
-};
+import { useState } from "react";
+import { Place } from "../types/place";
+import { MapProvider } from "../libs/map";
+import List from "./components/list";
+import MapContainer from "./components/map";
 
 export default function Index() {
-  return (
-    <div className="absolute w-full h-full inset-0 overflow-hidden">
-      <MapProvider>
-        <Map
-          id="map"
-          defaultState={{
-            center: [55.751574, 37.573856],
-            zoom: 5,
-          }}
-          options={{
-            suppressMapOpenBlock: true,
-            suppressObsoleteBrowserNotifier: true,
-          }}
-        >
-          <div className="absolute bottom-10 left-2 z-10">
-            <NavigateButton />
-          </div>
-          {/* <Balloon position={[55.684758, 37.738521]}>
+  const [mapIsOpen, setMapIsOpen] = useState(true);
+  const toggleMap = () => setMapIsOpen((isOpen) => !isOpen);
 
-          </Balloon> */}
-        </Map>
+  const places: Place[] = [
+    {
+      id: "1",
+      label: "Place 1",
+      longitude: 55.684758,
+      latitude: 37.738521,
+    },
+  ];
+
+  return (
+    <div className="absolute w-full h-full inset-0 overflow-hidden flex">
+      <MapProvider apiUrl="https://api-maps.yandex.ru/2.1/?lang=ru_RU">
+        <div className={`p-4 ${mapIsOpen ? "basis-1/2" : "w-full"}`}>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-lg">Places</div>
+            <button
+              className="py-1 px-2 rounded bg-slate-800"
+              onClick={toggleMap}
+            >
+              {mapIsOpen ? "Hide" : "Open"} Map
+            </button>
+          </div>
+          <List places={places} />
+        </div>
+        {mapIsOpen && (
+          <div className="basis-1/2 relative">
+            <MapContainer places={places} />
+          </div>
+        )}
       </MapProvider>
     </div>
   );

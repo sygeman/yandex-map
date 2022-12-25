@@ -9,52 +9,62 @@ export type YMapsApi = typeof ymaps;
 type MountedMapsContextValue = {
   yamapAPI: YMapsApi;
   apiIsReady: boolean;
-  maps: { [id: string]: Map };
-  onMapMount: (map: Map, id: string) => void;
-  onMapUnmount: (id: string) => void;
+  map: Map;
+  onMapMount: (map: Map) => void;
+  onMapUnmount: () => void;
+  reset: () => void;
+  zoomIn: () => void;
+  zoomOut: () => void;
 };
 
 export const MountedMapsContext = createContext<MountedMapsContextValue>(null);
 
-export const MapProvider: React.FC<{ children?: React.ReactNode }> = (
-  props
-) => {
+export const MapProvider: React.FC<{
+  children?: React.ReactNode;
+  apiUrl: string;
+}> = (props) => {
   const yamapAPI = (typeof window !== "undefined" &&
     window["ymaps"]) as YMapsApi;
-  const [maps, setMaps] = useState<{ [id: string]: Map }>({});
+  const [map, setMap] = useState<Map>(null);
   const [apiIsReady, setApiIsReady] = useState<boolean>(false);
 
-  const onMapMount = useCallback((map: Map, id = "default") => {
-    setMaps((currMaps) => {
-      if (id === "current") {
-        throw new Error("'current' cannot be used as map id");
-      }
-      if (currMaps[id]) {
-        throw new Error(`Multiple maps with the same id: ${id}`);
-      }
-      return { ...currMaps, [id]: map };
-    });
+  const onMapMount = useCallback((map: Map) => {
+    setMap(map);
   }, []);
 
-  const onMapUnmount = useCallback((id = "default") => {
-    setMaps((currMaps) => {
-      if (currMaps[id]) {
-        const nextMaps = { ...currMaps };
-        delete nextMaps[id];
-        return nextMaps;
-      }
-      return currMaps;
-    });
+  const onMapUnmount = useCallback(() => {
+    setMap(null);
   }, []);
+
+  const zoomIn = useCallback(() => {
+    map.setZoom(map.getZoom() + 1);
+  }, [map]);
+
+  const zoomOut = useCallback(() => {
+    map.setZoom(map.getZoom() - 1);
+  }, [map]);
+
+  const reset = useCallback(() => {
+    map.setCenter([55.76, 37.64]);
+    map.setZoom(7);
+  }, [map]);
 
   return (
     <MountedMapsContext.Provider
-      value={{ yamapAPI, apiIsReady, maps, onMapMount, onMapUnmount }}
+      value={{
+        yamapAPI,
+        apiIsReady,
+        map,
+        onMapMount,
+        onMapUnmount,
+        reset,
+        zoomIn,
+        zoomOut,
+      }}
     >
       <Script
-        src="https://api-maps.yandex.ru/2.1/?lang=ru_RU"
+        src={props.apiUrl}
         onLoad={() => {
-          console.log("Script has loaded");
           setApiIsReady(true);
         }}
       />
@@ -63,7 +73,4 @@ export const MapProvider: React.FC<{ children?: React.ReactNode }> = (
   );
 };
 
-export const useMap = () => {
-  const map = useContext(MountedMapsContext);
-  return map;
-};
+export const useMap = () => useContext(MountedMapsContext);

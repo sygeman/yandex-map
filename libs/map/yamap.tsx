@@ -1,5 +1,5 @@
-import { useContext, useEffect } from 'react';
-import { MountedMapsContext } from './provider';
+import { useContext, useEffect } from "react";
+import { MountedMapsContext } from "./provider";
 
 /* eslint-disable-next-line */
 export interface MapProps {
@@ -10,7 +10,8 @@ export interface MapProps {
 }
 
 export function Map(props: MapProps) {
-  const { yamapAPI, apiIsReady, onMapMount } = useContext(MountedMapsContext);
+  const { yamapAPI, apiIsReady, onMapMount, onMapUnmount } =
+    useContext(MountedMapsContext);
 
   useEffect(() => {
     if (apiIsReady) {
@@ -24,13 +25,19 @@ export function Map(props: MapProps) {
           props.options
         );
 
-        onMapMount(myMap, props.id);
+        onMapMount(myMap);
       });
     }
+
+    return () => {
+      if (apiIsReady) {
+        onMapUnmount();
+      }
+    };
   }, [apiIsReady]);
 
   return (
-    <div id={props.id} style={{ width: '100%', height: '100%' }}>
+    <div id={props.id} style={{ width: "100%", height: "100%" }}>
       {props.children}
     </div>
   );
