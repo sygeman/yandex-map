@@ -10,7 +10,7 @@ interface ListProps {
 
 const List: React.FC<ListProps> = (props) => {
   return (
-    <div>
+    <div className="space-y-2">
       {props.places.map((place) => (
         <Card key={place.id} place={place} />
       ))}

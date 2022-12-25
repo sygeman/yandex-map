@@ -18,12 +18,15 @@ export function Map(props: MapProps) {
       yamapAPI.ready(() => {
         const myMap = new yamapAPI.Map(
           props.id,
-          {
-            controls: [],
-            ...props.defaultState,
-          },
-          props.options
+          props.defaultState || {},
+          props.options || {}
         );
+
+        myMap.events.add("click", function (e) {
+          // Получение координат щелчка
+          var coords = e.get("coords");
+          console.log(coords.join(", "));
+        });
 
         onMapMount(myMap, props.defaultState);
       });

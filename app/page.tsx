@@ -10,13 +10,17 @@ export default function Index() {
   const toggleMap = () => setMapIsOpen((isOpen) => !isOpen);
 
   const places: Place[] = [
-    {
-      id: "1",
-      label: "Place 1",
-      longitude: 55.684758,
-      latitude: 37.738521,
-    },
-  ];
+    [56.04785018702136, 37.34204440950727],
+    [55.77480245597731, 37.866641577476024],
+    [55.85367530400972, 37.06738620638225],
+    [55.85830988519754, 38.32257419466352],
+    [55.52475698166306, 37.023440893882274],
+  ].map(([longitude, latitude], i) => ({
+    id: `${i}`,
+    label: `Place ${i + 1}`,
+    longitude,
+    latitude,
+  }));
 
   return (
     <div className="absolute w-full h-full inset-0 overflow-hidden flex">
