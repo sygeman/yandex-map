@@ -10,7 +10,7 @@ type MountedMapsContextValue = {
   yamapAPI: YMapsApi;
   apiIsReady: boolean;
   map: Map;
-  onMapMount: (map: Map) => void;
+  onMapMount: (map: Map, defaultState?: ymaps.IMapState) => void;
   onMapUnmount: () => void;
   reset: () => void;
   zoomIn: () => void;
@@ -27,8 +27,10 @@ export const MapProvider: React.FC<{
     window["ymaps"]) as YMapsApi;
   const [map, setMap] = useState<Map>(null);
   const [apiIsReady, setApiIsReady] = useState<boolean>(false);
+  const [defaultState, setDefaultState] = useState<ymaps.IMapState>({});
 
-  const onMapMount = useCallback((map: Map) => {
+  const onMapMount = useCallback((map: Map, defaultState: ymaps.IMapState) => {
+    if (defaultState) setDefaultState(defaultState);
     setMap(map);
   }, []);
 
@@ -36,18 +38,13 @@ export const MapProvider: React.FC<{
     setMap(null);
   }, []);
 
-  const zoomIn = useCallback(() => {
-    map.setZoom(map.getZoom() + 1);
-  }, [map]);
-
-  const zoomOut = useCallback(() => {
-    map.setZoom(map.getZoom() - 1);
-  }, [map]);
+  const zoomIn = useCallback(() => map.setZoom(map.getZoom() + 1), [map]);
+  const zoomOut = useCallback(() => map.setZoom(map.getZoom() - 1), [map]);
 
   const reset = useCallback(() => {
-    map.setCenter([55.76, 37.64]);
-    map.setZoom(7);
-  }, [map]);
+    map.setCenter(defaultState.center);
+    map.setZoom(defaultState.zoom);
+  }, [map, defaultState]);
 
   return (
     <MountedMapsContext.Provider

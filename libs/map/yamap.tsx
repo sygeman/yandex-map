@@ -25,7 +25,7 @@ export function Map(props: MapProps) {
           props.options
         );
 
-        onMapMount(myMap);
+        onMapMount(myMap, props.defaultState);
       });
     }
 
