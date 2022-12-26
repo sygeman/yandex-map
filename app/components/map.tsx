@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Map, Marker, Popup } from "../../libs/map";
+import { Map } from "../../libs/map";
 import type { Place } from "../../types/place";
 import MapControl from "./map-control";
 
@@ -12,7 +12,7 @@ const MapContainer: React.FC<MapContainerProps> = ({ places }) => {
   return (
     <Map
       id="map"
-      defaultState={{
+      state={{
         center: [55.751574, 37.573856],
         zoom: 7,
         controls: [],
@@ -20,20 +20,22 @@ const MapContainer: React.FC<MapContainerProps> = ({ places }) => {
       options={{
         suppressMapOpenBlock: true,
         suppressObsoleteBrowserNotifier: true,
+        yandexMapDisablePoiInteractivity: true,
       }}
+      markers={places}
+      createMarker={({ id }) => (
+        <div className="absolute bottom-0 transform -translate-x-1/2">
+          <div className="bg-white whitespace-nowrap py-1 px-2 rounded text-sm shadow">
+            Marker - {id}
+          </div>
+        </div>
+      )}
+      createPopup={({ id }) => (
+        <div className="bg-white whitespace-nowrap py-4 px-2 rounded text-sm shadow z-50">
+          Popup - {id}
+        </div>
+      )}
     >
-      {places.map((place) => (
-        <Marker
-          key={place.id}
-          longitude={place.longitude}
-          latitude={place.latitude}
-        >
-          {place.label}
-        </Marker>
-      ))}
-
-      <Popup>Popup</Popup>
-
       <MapControl />
     </Map>
   );
