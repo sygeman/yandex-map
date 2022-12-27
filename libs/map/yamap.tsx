@@ -8,7 +8,6 @@ type Marker = {
   latitude: number;
 };
 
-/* eslint-disable-next-line */
 export interface MapProps {
   id: string;
   options?: ymaps.IMapOptions;
@@ -26,20 +25,12 @@ export function Map(props: MapProps) {
     useContext(MountedMapsContext);
 
   const createIconLayout = (marker: Marker) => {
-    return yamapAPI.templateLayoutFactory.createClass<any>(
-      `<div id="map-marker-${marker.id}" class="relative"></div>`,
-      {
-        build() {
-          this.constructor.superclass.build.call(this);
-
-          const container = this.getElement().querySelector(
-            `#map-marker-${marker.id}`
-          );
-
-          ReactDOM.render(props.createMarker(marker), container);
-        },
-      }
-    );
+    return yamapAPI.templateLayoutFactory.createClass<any>(``, {
+      build() {
+        this.constructor.superclass.build.call(this);
+        ReactDOM.render(props.createMarker(marker), this.getElement());
+      },
+    });
   };
 
   const createBalloonContentLayout = (marker: Marker) => {
