@@ -25,7 +25,11 @@ export default function Index() {
   return (
     <div className="absolute w-full h-full inset-0 overflow-hidden flex">
       <MapProvider apiUrl="https://api-maps.yandex.ru/2.1/?lang=ru_RU">
-        <div className={`p-4 ${mapIsOpen ? "basis-1/2" : "w-full"}`}>
+        <div
+          className={`p-4 ${
+            mapIsOpen ? "basis-1/2" : "w-full"
+          } md:block hidden`}
+        >
           <div className="flex items-center justify-between mb-2">
             <div className="text-lg">Places</div>
             <button

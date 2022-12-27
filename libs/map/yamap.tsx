@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import { renderToString } from "react-dom/server";
+import { createPlacemark } from "./create-placemark";
 import { MountedMapsContext } from "./provider";
 
-type Marker = {
+export type Marker = {
   id: string;
   longitude: number;
   latitude: number;
@@ -30,30 +30,18 @@ export const Map: React.FC<MapProps> = ({
   const { yamapAPI, apiIsReady, onMapMount, onMapUnmount } =
     useContext(MountedMapsContext);
 
-  const createPlacemark = (marker: Marker) =>
-    new yamapAPI.Placemark(
-      [marker.longitude, marker.latitude],
-      {},
-      {
-        iconLayout: yamapAPI.templateLayoutFactory.createClass(
-          renderToString(createMarker(marker))
-        ),
-        balloonContentLayout: yamapAPI.templateLayoutFactory.createClass(
-          renderToString(createPopup(marker))
-        ),
-        balloonLayout: yamapAPI.templateLayoutFactory.createClass(
-          `$[[options.contentLayout]]`
-        ),
-        hideIconOnBalloonOpen: false,
-        openBalloonOnClick: true,
-        pane: "overlaps",
-      }
-    );
-
   useEffect(() => {
     if (apiIsReady) {
       yamapAPI.ready(() => {
+        const bounds = yamapAPI.util.bounds.fromPoints(
+          markers.map((marker) => [marker.longitude, marker.latitude])
+        );
+
+        console.log(yamapAPI.util.bounds.getCenterAndZoom(bounds, [500, 500]));
+
         const myMap = new yamapAPI.Map(id, state || {}, options || {});
+
+        myMap.setBounds(bounds);
 
         myMap.events.add("click", function (e) {
           // Получение координат щелчка
@@ -61,7 +49,12 @@ export const Map: React.FC<MapProps> = ({
         });
 
         markers.forEach((marker) => {
-          const placemark = createPlacemark(marker);
+          const placemark = createPlacemark({
+            marker,
+            yamapAPI,
+            createMarker,
+            createPopup,
+          });
           myMap.geoObjects.add(placemark);
         });
 

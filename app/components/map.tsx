@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Map } from "../../libs/map";
+import { Map, useMap } from "../../libs/map";
 import type { Place } from "../../types/place";
 import MapControl from "./map-control";
 
@@ -24,14 +24,18 @@ const MapContainer: React.FC<MapContainerProps> = ({ places }) => {
       }}
       markers={places}
       createMarker={({ id }) => (
-        <div className="absolute bottom-0 transform -translate-x-1/2">
+        <div className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center">
           <div className="bg-slate-700 text-white whitespace-nowrap py-1 px-2 rounded text-sm shadow">
             {places.find((place) => place.id === id)?.label}
           </div>
+          <div className="w-0.5 h-2 flex bg-slate-700"></div>
         </div>
       )}
       createPopup={({ id }) => (
-        <div className="absolute bottom-8 transform -translate-x-1/2">
+        <div
+          className="absolute transform -translate-x-1/2"
+          style={{ visibility: "hidden" }}
+        >
           <div className="bg-slate-700 text-white min-w-[320px] p-4 rounded text-sm shadow z-50 w-full h-full">
             <div className="text-lg">
               {places.find((place) => place.id === id)?.label}
