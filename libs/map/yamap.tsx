@@ -56,49 +56,13 @@ export function Map(props: MapProps) {
 
   const createBalloonLayout = () => {
     return yamapAPI.templateLayoutFactory.createClass<any>(
-      `<div class="popover">$[[options.contentLayout observeSize width=max-content height=max-content]]'</div>`,
+      `<div class="popover">$[[options.contentLayout]]</div>`,
       {
         build() {
           this.constructor.superclass.build.call(this);
           this.layout = this.getElement().querySelector(".popover");
           this.content = this.getElement().querySelector(
             `.${BALLOON_LAYOUT_CONTENT_CLASS} > *`
-          );
-
-          this.applyElementOffset();
-        },
-        applyElementOffset() {
-          this.layout.style.left = `${-(this.content.offsetWidth / 2)}px`;
-          this.layout.style.top = `${-this.content.offsetHeight}px`;
-        },
-        onSublayoutSizeChange() {
-          this.constructor.superclass.onSublayoutSizeChange.apply(
-            this,
-            arguments
-          );
-
-          if (!this.layout || !this.content) {
-            return;
-          }
-
-          this.applyElementOffset();
-
-          this.events.fire("shapechange");
-        },
-
-        getShape() {
-          if (!this.layout || !this.content) {
-            return this.constructor.superclass.getShape.call(this);
-          }
-
-          const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = this
-            .content as HTMLElement;
-
-          return new yamapAPI.shape.Rectangle(
-            new yamapAPI.geometry.pixel.Rectangle([
-              [offsetLeft, offsetTop],
-              [offsetLeft + offsetWidth, offsetTop + offsetHeight],
-            ])
           );
         },
       }
