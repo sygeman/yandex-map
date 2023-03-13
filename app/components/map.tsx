@@ -1,63 +1,64 @@
 "use client";
-import React from "react";
-import { Map, useMap } from "../../libs/map";
+import React, { useCallback, useState } from "react";
+import { useMap } from "../../libs/map/provider";
 import type { Place } from "../../types/place";
-import MapControl from "./map-control";
 
 interface MapContainerProps {
   places: Place[];
 }
 
-const MapContainer: React.FC<MapContainerProps> = ({ places }) => {
+const MarkerWithPopup = ({ place }: { place: Place }) => {
+  const [popupOpen, setPopupOpen] = useState(false);
+  const togglePopup = useCallback(
+    () => setPopupOpen((prev) => !prev),
+    [setPopupOpen]
+  );
+
   return (
-    <Map
-      id="map"
-      state={{
-        center: [55.751574, 37.573856],
-        zoom: 7,
-        controls: [],
-      }}
-      options={{
-        suppressMapOpenBlock: true,
-        suppressObsoleteBrowserNotifier: true,
-        yandexMapDisablePoiInteractivity: true,
-      }}
-      markers={places}
-      createMarker={({ id }) => (
-        <div className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center">
-          <div className="bg-slate-700 text-white whitespace-nowrap py-1 px-2 rounded text-sm shadow">
-            {places.find((place) => place.id === id)?.label}
-          </div>
-          <div className="w-0.5 h-2 flex bg-slate-700"></div>
+    <>
+      <div
+        className="absolute bottom-0 transform -translate-x-1/2 flex flex-col items-center"
+        onClick={togglePopup}
+      >
+        <div className="bg-slate-700 text-white whitespace-nowrap py-1 px-2 rounded text-sm shadow">
+          {place.label}
         </div>
-      )}
-      createPopup={({ id }) => (
-        <div
-          className="absolute transform -translate-x-1/2"
-          style={{ visibility: "hidden" }}
-        >
+      </div>
+      {popupOpen ? (
+        <div className="absolute transform -translate-x-1/2">
           <div className="bg-slate-700 text-white min-w-[320px] p-4 rounded text-sm shadow z-50 w-full h-full">
-            <div className="text-lg">
-              {places.find((place) => place.id === id)?.label}
-            </div>
-            <div className="text-slate-300 text-sm">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
-            </div>
+            <div className="text-lg">{place.label}</div>
+            <div className="text-slate-300 text-sm">{place.text}</div>
           </div>
         </div>
-      )}
-    >
-      <MapControl />
-    </Map>
+      ) : null}
+    </>
+  );
+};
+
+const MapContainer: React.FC<MapContainerProps> = ({ places }) => {
+  const { reactifyApi } = useMap();
+
+  if (!reactifyApi) return <div>Загрузка лучшей карты в мире...</div>;
+
+  const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker } =
+    reactifyApi;
+
+  return (
+    <YMap location={{ center: [37.623082, 55.75254], zoom: 9 }}>
+      <YMapDefaultSchemeLayer />
+      <YMapDefaultFeaturesLayer />
+
+      {places.map((place) => (
+        <YMapMarker
+          key={place.id}
+          zIndex={1}
+          coordinates={[place.latitude, place.longitude]}
+        >
+          <MarkerWithPopup place={place} />
+        </YMapMarker>
+      ))}
+    </YMap>
   );
 };
 

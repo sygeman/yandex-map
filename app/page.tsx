@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Place } from "../types/place";
-import { MapProvider } from "../libs/map";
+import { MapProvider } from "../libs/map/provider";
 import List from "./components/list";
 import MapContainer from "./components/map";
 
@@ -23,11 +23,23 @@ export default function Index() {
     label: `Place ${i + 1}`,
     longitude,
     latitude,
+    text: `Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry standard dummy text
+          ever since the 1500s, when an unknown printer took a galley of
+          type and scrambled it to make a type specimen book. It has
+          survived not only five centuries, but also the leap into
+          electronic typesetting, remaining essentially unchanged. It was
+          popularised in the 1960s with the release of Letraset sheets
+          containing Lorem Ipsum passages, and more recently with desktop
+          publishing software like Aldus PageMaker including versions of
+          Lorem Ipsum.`,
   }));
+
+  const apiUrl = `https://api-maps.yandex.ru/3.0/?apikey=${process.env.NEXT_PUBLIC_YANDEX_MAP_KEY}&lang=ru_RU`;
 
   return (
     <div className="absolute w-full h-full inset-0 overflow-hidden flex">
-      <MapProvider apiUrl="https://api-maps.yandex.ru/2.1/?lang=ru_RU">
+      <MapProvider apiUrl={apiUrl}>
         <div
           className={`p-4 ${
             mapIsOpen ? "basis-1/2" : "w-full"
