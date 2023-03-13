@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useState } from "react";
 import ReactDOM from "react-dom";
 import Script from "next/script";
-import type {} from "@yandex/ymaps3-types";
 import { ReactifiedModule } from "@yandex/ymaps3-types/reactify";
 
-type ReactifyApi = ReactifiedModule<
-  typeof import("/project/yandex-map/node_modules/.pnpm/@yandex+ymaps3-types@0.0.5/node_modules/@yandex/ymaps3-types/index")
->;
+type ReactifyApi = ReactifiedModule<typeof import("@yandex/ymaps3-types")>;
 
 type MountedMapsContextValue = {
   ymapsReady: boolean;
@@ -35,8 +32,7 @@ export const MapProvider: React.FC<{
             ymaps3.ready,
           ]);
           const reactify = ymaps3React.reactify.bindTo(React, ReactDOM);
-          const r = reactify.module(ymaps3);
-          setReactifyApi(r);
+          setReactifyApi(reactify.module(ymaps3));
           setYmapsReady(true);
         }}
       />
