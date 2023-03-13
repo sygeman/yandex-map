@@ -1,9 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { Place } from "../types/place";
-import { MapProvider } from "../libs/map/provider";
+import { MapProvider } from "../providers/map-provider";
 import List from "./components/list";
-import MapContainer from "./components/map";
+import { Map } from "./components/map";
 
 export default function Index() {
   const [mapIsOpen, setMapIsOpen] = useState(true);
@@ -58,7 +59,7 @@ export default function Index() {
         </div>
         {mapIsOpen && (
           <div className="basis-1/2 relative">
-            <MapContainer places={places} />
+            <Map places={places} />
           </div>
         )}
       </MapProvider>
