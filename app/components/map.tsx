@@ -1,13 +1,19 @@
 "use client";
 
+import { LngLat } from "@yandex/ymaps3-types";
 import React from "react";
 import { useMap } from "../../providers/map-provider";
 import type { Place } from "../../types/place";
 import { MarkerWithPopup } from "./marker-with-popup";
 
-export const Map = ({ places }: { places: Place[] }) => {
-  const { reactifyApi } = useMap();
+interface MapProps {
+  places: Place[];
+  selectedPlaceId: string | null;
+  selectPlace: (id: string | null) => void;
+}
 
+export const Map = ({ places, selectedPlaceId, selectPlace }: MapProps) => {
+  const { reactifyApi } = useMap();
   if (!reactifyApi) {
     return <div>Загрузка лучшей карты в мире...</div>;
   }
@@ -20,15 +26,22 @@ export const Map = ({ places }: { places: Place[] }) => {
       <YMapDefaultSchemeLayer />
       <YMapDefaultFeaturesLayer />
 
-      {places.map((place) => (
-        <YMapMarker
-          key={place.id}
-          zIndex={1}
-          coordinates={[place.latitude, place.longitude]}
-        >
-          <MarkerWithPopup place={place} />
-        </YMapMarker>
-      ))}
+      {places.map((place) => {
+        const selected = selectedPlaceId === place.id;
+        return (
+          <YMapMarker
+            key={place.id}
+            zIndex={selected ? 10 : 1}
+            coordinates={[place.longitude, place.latitude]}
+          >
+            <MarkerWithPopup
+              place={place}
+              selected={selected}
+              selectPlace={selectPlace}
+            />
+          </YMapMarker>
+        );
+      })}
     </YMap>
   );
 };
