@@ -1,7 +1,7 @@
 "use client";
 
-import { LngLat } from "@yandex/ymaps3-types";
-import React from "react";
+import { YMapLocation } from "@yandex/ymaps3-types/imperative/YMap";
+import React, { useState } from "react";
 import { useMap } from "../../providers/map-provider";
 import type { Place } from "../../types/place";
 import { MarkerWithPopup } from "./marker-with-popup";
@@ -13,18 +13,29 @@ interface MapProps {
 }
 
 export const Map = ({ places, selectedPlaceId, selectPlace }: MapProps) => {
+  const [location, setLocation] = useState<YMapLocation>({
+    center: [37.623082, 55.75254],
+    zoom: 9,
+  });
   const { reactifyApi } = useMap();
   if (!reactifyApi) {
     return <div>Загрузка лучшей карты в мире...</div>;
   }
 
-  const { YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker } =
-    reactifyApi;
+  const {
+    YMap,
+    YMapDefaultSchemeLayer,
+    YMapDefaultFeaturesLayer,
+    YMapMarker,
+    YMapListener,
+  } = reactifyApi;
 
   return (
-    <YMap location={{ center: [37.623082, 55.75254], zoom: 9 }}>
+    <YMap location={location}>
       <YMapDefaultSchemeLayer />
       <YMapDefaultFeaturesLayer />
+
+      <YMapListener onUpdate={(o) => setLocation(o.location)} />
 
       {places.map((place) => {
         const selected = selectedPlaceId === place.id;
