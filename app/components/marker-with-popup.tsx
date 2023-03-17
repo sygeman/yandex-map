@@ -1,7 +1,7 @@
 "use client";
 
 import { YMap } from "@yandex/ymaps3-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import type { Place } from "../../types/place";
 import getPopupPosition from "./helpers/get-popup-position";
 
@@ -25,21 +25,23 @@ export const MarkerWithPopup = ({
     opacity: "0",
   });
 
+  const updatePositionAndShow = useCallback(() => {
+    const map = mapRef?.current?.container;
+    const marker = markerRef?.current;
+    const popup = popupRef?.current;
+
+    if (!map || !marker || !popup) return;
+
+    setPosition({
+      ...getPopupPosition(map, popup, marker),
+      visibility: "visible",
+      opacity: "1",
+    });
+  }, [mapRef]);
+
   useEffect(() => {
-    if (selected) {
-      const map = mapRef?.current?.container;
-      const marker = markerRef?.current;
-      const popup = popupRef?.current;
-
-      if (!map || !marker || !popup) return;
-
-      setPosition({
-        ...getPopupPosition(map, popup, marker),
-        visibility: "visible",
-        opacity: "1",
-      });
-    }
-  }, [selected]);
+    if (selected) updatePositionAndShow();
+  }, [selected, updatePositionAndShow]);
 
   return (
     <div

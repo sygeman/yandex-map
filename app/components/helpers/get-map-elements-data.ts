@@ -1,7 +1,3 @@
-const MAP_POPUP_MARGIN = 8;
-const MARKER_ARROW_HEIGHT = 8;
-const MARKER_OFFSET = 8;
-
 const getMapElementsData = (
   mapElement: HTMLElement,
   popupElement: HTMLElement,
@@ -14,7 +10,7 @@ const getMapElementsData = (
   const mapHalfWidth = mapElementData.width / 2;
   const mapHalfHeight = mapElementData.height / 2;
 
-  const markerHeight = markerElementData.height + MARKER_ARROW_HEIGHT;
+  const markerHeight = markerElementData.height;
   const markerWidth = markerElementData.width;
   const markerHalfWidth = markerWidth / 2;
   const markerHalfHeight = markerHeight / 2;
@@ -24,35 +20,29 @@ const getMapElementsData = (
   const popupHalfWidth = popupElementData.width / 2;
   const popupHalfHeight = popupHeight / 2;
 
-  const topSpace =
-    markerElementData.top - mapElementData.top - MAP_POPUP_MARGIN;
+  const topSpace = markerElementData.top - mapElementData.top;
   const bottomSpace =
     mapElementData.top +
     mapElementData.height -
     markerElementData.top -
-    markerHeight -
-    MAP_POPUP_MARGIN;
+    markerHeight;
   const spaceAvailableAtTop = topSpace >= popupHeight;
   const spaceAvailableAtBottom = bottomSpace >= popupHeight;
 
-  const leftSpace =
-    markerElementData.left - mapElementData.left - MAP_POPUP_MARGIN;
+  const leftSpace = markerElementData.left - mapElementData.left;
   const rightSpace =
     mapElementData.left +
     mapElementData.width -
     markerElementData.left -
-    markerWidth -
-    MAP_POPUP_MARGIN;
+    markerWidth;
   const spaceAvailableAtLeft = leftSpace >= popupWidth;
   const spaceAvailableAtRight = rightSpace >= popupWidth;
 
   const leftSpaceX = leftSpace + markerHalfWidth - popupHalfWidth;
   const rightSpaceX = rightSpace + markerHalfWidth - popupHalfWidth;
 
-  const topSpaceY =
-    topSpace - popupHalfHeight + markerHalfHeight - MARKER_OFFSET;
-  const bottomSpaceY =
-    bottomSpace - popupHalfHeight + markerHalfHeight + MARKER_OFFSET;
+  const topSpaceY = topSpace - popupHalfHeight + markerHalfHeight;
+  const bottomSpaceY = bottomSpace - popupHalfHeight + markerHalfHeight;
   const spaceAvailableAtTopY = topSpaceY >= 0;
   const spaceAvailableAtBottomY = bottomSpaceY >= 0;
 

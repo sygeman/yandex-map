@@ -1,5 +1,3 @@
-const MARKER_OFFSET = 8;
-
 import getMapElementsData from "./get-map-elements-data";
 
 const getPopupPosition = (
@@ -36,7 +34,7 @@ const getPopupPosition = (
 
     // Доступно место над маркером
     if (spaceAvailableAtTop) {
-      return { left, bottom: markerHeight + MARKER_OFFSET };
+      return { left, bottom: markerHeight };
     }
 
     // Доступно место под маркером
@@ -48,7 +46,7 @@ const getPopupPosition = (
     (spaceAvailableAtLeft || spaceAvailableAtRight) &&
     (spaceAvailableAtTopY || spaceAvailableAtBottomY)
   ) {
-    let bottom = -popupHalfHeight + MARKER_OFFSET + markerHalfHeight;
+    let bottom = -popupHalfHeight + markerHalfHeight;
 
     // Корректируем смещение по вертикали, если маркер близко к границе карты
     if (topSpaceY < 0) {
@@ -59,12 +57,12 @@ const getPopupPosition = (
 
     // Доступно место слева от маркера
     if (spaceAvailableAtLeft) {
-      const left = -popupHalfWidth - markerHalfWidth - MARKER_OFFSET;
+      const left = -popupHalfWidth - markerHalfWidth;
       return { bottom, left };
     }
 
     // Доступно место справа от маркера
-    const left = popupHalfWidth + markerHalfWidth + MARKER_OFFSET;
+    const left = popupHalfWidth + markerHalfWidth;
     return { bottom, left };
   }
 
