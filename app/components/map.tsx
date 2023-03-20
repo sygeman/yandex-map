@@ -10,22 +10,15 @@ import { useMap } from "../../providers/map-provider";
 import type { Place } from "../../types/place";
 import { MarkerWithPopup } from "./marker-with-popup";
 import { getBboxByCoordinates } from "./helpers/get-bbox-by-coordinates";
-import { LngLatBounds } from "@yandex/ymaps3-types";
+import { usePageState } from "../../providers/page-provider";
 
 interface MapProps {
   places: Place[];
-  selectedPlaceId: string | null;
-  selectPlace: (id: string | null) => void;
-  onBoundsChange?: (bounds: LngLatBounds) => void;
 }
 
-export const Map = ({
-  places,
-  selectedPlaceId,
-  selectPlace,
-  onBoundsChange,
-}: MapProps) => {
+export const Map = ({ places }: MapProps) => {
   const mapRef = useRef<(YMap & { container: HTMLElement }) | null>(null);
+  const { selectedPlaceId, selectPlace, setBounds } = usePageState();
   const startBounds = useMemo(
     () =>
       getBboxByCoordinates(
@@ -37,7 +30,7 @@ export const Map = ({
     startBounds ? { bounds: startBounds } : { zoom: 0 }
   );
   const setBoundsDebounced = useDebouncedCallback(
-    (value) => onBoundsChange?.(value),
+    (value) => setBounds(value),
     500
   );
   const setLocationDebounced = useDebouncedCallback(

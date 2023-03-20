@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import Script from "next/script";
 import { ReactifiedModule } from "@yandex/ymaps3-types/reactify";
@@ -19,8 +19,10 @@ export const MapProvider: React.FC<{
 }> = (props) => {
   const [reactifyApi, setReactifyApi] = useState<ReactifyApi | null>(null);
 
+  const contextValue = useMemo(() => ({ reactifyApi }), [reactifyApi]);
+
   return (
-    <MountedMapsContext.Provider value={{ reactifyApi }}>
+    <MountedMapsContext.Provider value={contextValue}>
       <Script
         src={props.apiUrl}
         onLoad={async () => {
