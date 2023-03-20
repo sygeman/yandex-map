@@ -36,11 +36,10 @@ export const Map = ({
   const [location, setLocation] = useState<YMapLocationRequest>(
     startBounds ? { bounds: startBounds } : { zoom: 0 }
   );
-  const setBoundsDebounced = useDebouncedCallback((value) => {
-    if (typeof onBoundsChange === "function") {
-      onBoundsChange(value);
-    }
-  }, 500);
+  const setBoundsDebounced = useDebouncedCallback(
+    (value) => onBoundsChange?.(value),
+    500
+  );
   const setLocationDebounced = useDebouncedCallback(
     (value) => setLocation(value),
     100
@@ -65,9 +64,9 @@ export const Map = ({
       <YMapDefaultFeaturesLayer />
 
       <YMapListener
-        onUpdate={(o) => {
-          setLocationDebounced(o.location);
-          setBoundsDebounced(o.location.bounds);
+        onUpdate={({ location }) => {
+          setLocationDebounced(location);
+          setBoundsDebounced(location.bounds);
         }}
       />
 
