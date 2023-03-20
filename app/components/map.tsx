@@ -18,7 +18,7 @@ interface MapProps {
 
 export const Map = ({ places }: MapProps) => {
   const mapRef = useRef<(YMap & { container: HTMLElement }) | null>(null);
-  const { selectedPlaceId, selectPlace, setBounds } = usePageState();
+  const { setBounds } = usePageState();
   const startBounds = useMemo(
     () =>
       getBboxByCoordinates(
@@ -45,7 +45,6 @@ export const Map = ({ places }: MapProps) => {
 
   const {
     YMap,
-    YMapMarker,
     YMapListener,
     YMapDefaultSchemeLayer,
     YMapDefaultFeaturesLayer,
@@ -63,23 +62,9 @@ export const Map = ({ places }: MapProps) => {
         }}
       />
 
-      {places.map((place) => {
-        const selected = selectedPlaceId === place.id;
-        return (
-          <YMapMarker
-            key={place.id}
-            zIndex={selected ? 10 : 1}
-            coordinates={[place.longitude, place.latitude]}
-          >
-            <MarkerWithPopup
-              mapRef={mapRef}
-              place={place}
-              selected={selected}
-              selectPlace={selectPlace}
-            />
-          </YMapMarker>
-        );
-      })}
+      {places.map((place) => (
+        <MarkerWithPopup key={place.id} mapRef={mapRef} place={place} />
+      ))}
     </YMap>
   );
 };
