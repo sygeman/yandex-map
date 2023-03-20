@@ -1,23 +1,50 @@
 "use client";
 
-import { YMap, YMapLocation } from "@yandex/ymaps3-types/imperative/YMap";
-import React, { useRef, useState } from "react";
+import {
+  YMap,
+  YMapLocationRequest,
+} from "@yandex/ymaps3-types/imperative/YMap";
+import { useDebouncedCallback } from "use-debounce";
+import React, { useMemo, useRef, useState } from "react";
 import { useMap } from "../../providers/map-provider";
 import type { Place } from "../../types/place";
 import { MarkerWithPopup } from "./marker-with-popup";
+import { getBboxByCoordinates } from "./helpers/get-bbox-by-coordinates";
+import { LngLatBounds } from "@yandex/ymaps3-types";
 
 interface MapProps {
   places: Place[];
   selectedPlaceId: string | null;
   selectPlace: (id: string | null) => void;
+  onBoundsChange?: (bounds: LngLatBounds) => void;
 }
 
-export const Map = ({ places, selectedPlaceId, selectPlace }: MapProps) => {
+export const Map = ({
+  places,
+  selectedPlaceId,
+  selectPlace,
+  onBoundsChange,
+}: MapProps) => {
   const mapRef = useRef<(YMap & { container: HTMLElement }) | null>(null);
-  const [location, setLocation] = useState<YMapLocation>({
-    center: [37.623082, 55.75254],
-    zoom: 9,
-  });
+  const startBounds = useMemo(
+    () =>
+      getBboxByCoordinates(
+        places.map((place) => [place.longitude, place.latitude])
+      ),
+    [places]
+  );
+  const [location, setLocation] = useState<YMapLocationRequest>(
+    startBounds ? { bounds: startBounds } : { zoom: 0 }
+  );
+  const setBoundsDebounced = useDebouncedCallback((value) => {
+    if (typeof onBoundsChange === "function") {
+      onBoundsChange(value);
+    }
+  }, 500);
+  const setLocationDebounced = useDebouncedCallback(
+    (value) => setLocation(value),
+    100
+  );
   const { reactifyApi } = useMap();
 
   if (!reactifyApi) {
@@ -37,7 +64,12 @@ export const Map = ({ places, selectedPlaceId, selectPlace }: MapProps) => {
       <YMapDefaultSchemeLayer />
       <YMapDefaultFeaturesLayer />
 
-      <YMapListener onUpdate={(o) => setLocation(o.location)} />
+      <YMapListener
+        onUpdate={(o) => {
+          setLocationDebounced(o.location);
+          setBoundsDebounced(o.location.bounds);
+        }}
+      />
 
       {places.map((place) => {
         const selected = selectedPlaceId === place.id;
