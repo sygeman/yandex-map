@@ -11,6 +11,7 @@ import type { Place } from "../../types/place";
 import MarkerWithPopup from "./marker-with-popup";
 import { getBboxByCoordinates } from "./helpers/get-bbox-by-coordinates";
 import { usePageState } from "../../providers/page-provider";
+import Loading from "./loading";
 
 interface MapProps {
   places: Place[];
@@ -39,13 +40,7 @@ export const Map = ({ places }: MapProps) => {
   );
   const { reactifyApi } = useMap();
 
-  if (!reactifyApi) {
-    return (
-      <div className="flex w-full h-full items-center justify-center">
-        Загрузка лучшей карты в мире...
-      </div>
-    );
-  }
+  if (!reactifyApi) return <Loading />;
 
   const {
     YMap,
