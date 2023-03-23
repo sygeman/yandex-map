@@ -1,25 +1,18 @@
+import { memo } from "react";
 import { usePageState } from "../../providers/page-provider";
 import type { Place } from "../../types/place";
+import Card from "./card";
 
 const List = ({ places }: { places: Place[] }) => {
-  const { selectedPlaceId, selectPlace } = usePageState();
+  const { selectPlace } = usePageState();
 
   return (
     <div className="space-y-2 h-full overflow-y-auto">
       {places.map((place) => (
-        <div
-          key={place.id}
-          onMouseEnter={() => selectPlace(place.id)}
-          onMouseLeave={() => selectPlace(null)}
-          className={`p-4 rounded-lg ${
-            selectedPlaceId === place.id ? "bg-slate-600" : "bg-slate-700"
-          }`}
-        >
-          {place.label}
-        </div>
+        <Card key={place.id} place={place} selectPlace={selectPlace} />
       ))}
     </div>
   );
 };
 
-export default List;
+export default memo(List);
