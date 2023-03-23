@@ -28,7 +28,8 @@ export const Map = ({ places }: MapProps) => {
     [places]
   );
   const [location, setLocation] = useState<YMapLocationRequest>(
-    startBounds ? { bounds: startBounds } : { zoom: 0 }
+    // @ts-ignore
+    startBounds ? { bounds: startBounds, margin: 20 } : { zoom: 0 }
   );
   const setBoundsDebounced = useDebouncedCallback(
     (value) => setBounds(value),
@@ -44,7 +45,6 @@ export const Map = ({ places }: MapProps) => {
 
   const {
     YMap,
-    YMapMarker,
     YMapListener,
     YMapDefaultSchemeLayer,
     YMapDefaultFeaturesLayer,
@@ -63,18 +63,14 @@ export const Map = ({ places }: MapProps) => {
       />
 
       {places.map((place) => (
-        <YMapMarker
+        <MarkerWithPopup
           key={place.id}
-          zIndex={selectedPlaceId === place.id ? 10 : 1}
-          coordinates={[place.longitude, place.latitude]}
-        >
-          <MarkerWithPopup
-            mapRef={mapRef}
-            place={place}
-            selected={selectedPlaceId === place.id}
-            selectPlace={selectPlace}
-          />
-        </YMapMarker>
+          place={place}
+          mapRef={mapRef}
+          reactifyApi={reactifyApi}
+          selected={selectedPlaceId === place.id}
+          selectPlace={selectPlace}
+        />
       ))}
     </YMap>
   );

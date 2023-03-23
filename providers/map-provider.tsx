@@ -3,7 +3,9 @@ import ReactDOM from "react-dom";
 import Script from "next/script";
 import { ReactifiedModule } from "@yandex/ymaps3-types/reactify";
 
-type ReactifyApi = ReactifiedModule<typeof import("@yandex/ymaps3-types")>;
+export type ReactifyApi = ReactifiedModule<
+  typeof import("@yandex/ymaps3-types")
+>;
 
 type MountedMapsContextValue = {
   reactifyApi: ReactifyApi | null;
