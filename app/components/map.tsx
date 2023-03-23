@@ -40,7 +40,11 @@ export const Map = ({ places }: MapProps) => {
   const { reactifyApi } = useMap();
 
   if (!reactifyApi) {
-    return <div>Загрузка лучшей карты в мире...</div>;
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        Загрузка лучшей карты в мире...
+      </div>
+    );
   }
 
   const {
