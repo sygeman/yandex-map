@@ -28,8 +28,7 @@ export const Map = ({ places }: MapProps) => {
     [places]
   );
   const [location] = useState<YMapLocationRequest>(
-    // @ts-ignore
-    startBounds ? { bounds: startBounds, margin: 20 } : { zoom: 0 }
+    startBounds ? { bounds: startBounds } : { zoom: 0 }
   );
   const setBoundsDebounced = useDebouncedCallback(
     (value) => setBounds(value),
@@ -47,7 +46,7 @@ export const Map = ({ places }: MapProps) => {
   } = reactifyApi;
 
   return (
-    <YMap location={location} ref={mapRef}>
+    <YMap margin={[20, 20, 20, 20]} location={location} ref={mapRef}>
       <YMapDefaultSchemeLayer />
       <YMapDefaultFeaturesLayer />
 
