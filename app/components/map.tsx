@@ -27,17 +27,13 @@ export const Map = ({ places }: MapProps) => {
       ),
     [places]
   );
-  const [location, setLocation] = useState<YMapLocationRequest>(
+  const [location] = useState<YMapLocationRequest>(
     // @ts-ignore
     startBounds ? { bounds: startBounds, margin: 20 } : { zoom: 0 }
   );
   const setBoundsDebounced = useDebouncedCallback(
     (value) => setBounds(value),
     500
-  );
-  const setLocationDebounced = useDebouncedCallback(
-    (value) => setLocation(value),
-    100
   );
   const { reactifyApi } = useMap();
 
@@ -57,7 +53,6 @@ export const Map = ({ places }: MapProps) => {
 
       <YMapListener
         onUpdate={({ location }) => {
-          setLocationDebounced(location);
           setBoundsDebounced(location.bounds);
         }}
       />
