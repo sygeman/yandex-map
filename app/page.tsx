@@ -13,19 +13,19 @@ export default function Index() {
   return (
     <PageStateProvider>
       <div className="absolute w-full h-full inset-0 overflow-hidden flex">
-        <MapProvider apiUrl={apiUrl}>
-          <div className="p-2 w-80 shrink-0 md:block hidden">
-            <div className="flex items-center justify-between mb-1">
-              <div>Places - {places.length}</div>
-            </div>
-            <Bounds />
-            <List places={places} />
+        <div className="p-2 w-80 shrink-0 md:block hidden">
+          <div className="flex items-center justify-between mb-1">
+            <div>Places - {places.length}</div>
           </div>
+          <Bounds />
+          <List places={places} />
+        </div>
 
-          <div className="relative h-full w-full">
+        <div className="relative h-full w-full">
+          <MapProvider apiUrl={apiUrl}>
             <Map places={places} />
-          </div>
-        </MapProvider>
+          </MapProvider>
+        </div>
       </div>
     </PageStateProvider>
   );
