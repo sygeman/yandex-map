@@ -8,7 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import React, { useMemo, useRef, useState } from "react";
 import { useMap } from "../../providers/map-provider";
 import type { Place } from "../../types/place";
-import { MarkerWithPopup } from "./marker-with-popup";
+import MarkerWithPopup from "./marker-with-popup";
 import { getBboxByCoordinates } from "./helpers/get-bbox-by-coordinates";
 import { usePageState } from "../../providers/page-provider";
 
@@ -18,7 +18,7 @@ interface MapProps {
 
 export const Map = ({ places }: MapProps) => {
   const mapRef = useRef<(YMap & { container: HTMLElement }) | null>(null);
-  const { setBounds } = usePageState();
+  const { selectedPlaceId, setBounds, selectPlace } = usePageState();
   const startBounds = useMemo(
     () =>
       getBboxByCoordinates(
@@ -45,6 +45,7 @@ export const Map = ({ places }: MapProps) => {
 
   const {
     YMap,
+    YMapMarker,
     YMapListener,
     YMapDefaultSchemeLayer,
     YMapDefaultFeaturesLayer,
@@ -63,7 +64,18 @@ export const Map = ({ places }: MapProps) => {
       />
 
       {places.map((place) => (
-        <MarkerWithPopup key={place.id} mapRef={mapRef} place={place} />
+        <YMapMarker
+          key={place.id}
+          zIndex={selectedPlaceId === place.id ? 10 : 1}
+          coordinates={[place.longitude, place.latitude]}
+        >
+          <MarkerWithPopup
+            mapRef={mapRef}
+            place={place}
+            selected={selectedPlaceId === place.id}
+            selectPlace={selectPlace}
+          />
+        </YMapMarker>
       ))}
     </YMap>
   );
