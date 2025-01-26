@@ -8,7 +8,7 @@ import { Map } from "./components/map";
 import { places } from "./data/base";
 
 export default function Index() {
-  const apiUrl = `https://api-maps.yandex.ru/3.0/?apikey=${process.env.NEXT_PUBLIC_YANDEX_MAP_KEY}&lang=ru_RU`;
+  const apiUrl = `https://api-maps.yandex.ru/v3/?apikey=${process.env.NEXT_PUBLIC_YANDEX_MAP_KEY}&lang=ru_RU`;
 
   return (
     <PageStateProvider>
