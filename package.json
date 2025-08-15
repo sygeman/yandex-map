@@ -2,6 +2,7 @@
   "name": "yandex-map",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,22 +10,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "14.2.23",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "use-debounce": "9.0.3"
+    "next": "15.4.6",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "use-debounce": "10.0.5"
   },
   "devDependencies": {
-    "@types/node": "22.10.5",
-    "@types/react": "18.3.12",
-    "@types/react-dom": "18.3.0",
-    "@yandex/ymaps3-types": "1.0.15542062",
-    "autoprefixer": "10.4.20",
-    "eslint": "8.36.0",
-    "eslint-config-next": "14.2.23",
-    "postcss": "8.4.49",
-    "tailwindcss": "3.4.17",
-    "typescript": "5.7.2"
+    "@types/node": "24.3.0",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "@tailwindcss/postcss": "4.1.11",
+    "@yandex/ymaps3-types": "1.0.17179206",
+    "eslint": "9.33.0",
+    "eslint-config-next": "15.4.6",
+    "postcss": "8.5.6",
+    "tailwindcss": "4.1.12",
+    "typescript": "5.9.2"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "bun@1.2.20"
 }
